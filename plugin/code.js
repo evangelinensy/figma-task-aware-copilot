@@ -416,8 +416,8 @@
   figma.ui.on("message", (msg) => {
     console.log("[Plugin] Received UI ready signal");
   });
-  setTimeout(() => {
-    console.log("[Plugin] Auto-capturing selection...");
+  function sendSelectionToUI() {
+    console.log("[Plugin] Capturing current selection...");
     const snapshot = buildFrameSnapshot();
     console.log("[Plugin] Snapshot built:", snapshot ? "has data" : "null");
     figma.ui.postMessage({
@@ -425,5 +425,12 @@
       snapshot
     });
     console.log("[Plugin] Selection message sent to UI");
+  }
+  setTimeout(() => {
+    sendSelectionToUI();
   }, 500);
+  figma.on("selectionchange", () => {
+    console.log("[Plugin] Selection changed, updating UI...");
+    sendSelectionToUI();
+  });
 })();
