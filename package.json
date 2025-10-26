@@ -8,7 +8,8 @@
     "build": "npm run build:plugin && npm run build:backend",
     "dev:backend": "tsx watch backend/server.ts",
     "dev": "npm run build:plugin && npm run dev:backend",
-    "start": "node backend/dist/server.js"
+    "start": "node backend/dist/server.js",
+    "parse-tokens": "tsx scripts/parse-material-tokens.ts"
   },
   "keywords": ["figma", "plugin", "ux", "design", "copilot", "material-web"],
   "author": "",
