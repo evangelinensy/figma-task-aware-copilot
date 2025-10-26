@@ -63,3 +63,53 @@ export interface PatternMapping {
 }
 
 export type PatternMap = Record<string, PatternMapping>;
+
+// Generate Design Schema
+
+export interface GenerateDesignRequest {
+  primaryTask: string;
+  secondaryTask?: string;
+  persona?: string;
+  constraints?: string;
+  systemPrompt?: string;
+  frameSnapshot?: FrameSnapshot;
+  analysisResults?: AnalyzeResponse; // Optional: use existing analysis
+}
+
+export interface ScaffoldNode {
+  type: 'component' | 'text' | 'rect' | 'divider';
+  componentName?: string; // e.g., 'md-filled-button'
+  textOverride?: string;
+  propsOverride?: Record<string, any>;
+}
+
+export interface ScaffoldRegion {
+  name: string;
+  height?: number; // Optional, will auto-size if not provided
+  layoutMode?: 'HORIZONTAL' | 'VERTICAL';
+  gap?: number;
+  padding?: number;
+  nodes: ScaffoldNode[];
+}
+
+export interface ScaffoldSpec {
+  frame: {
+    width: number;
+    height: number;
+    layoutMode: 'HORIZONTAL' | 'VERTICAL';
+    gap?: number;
+    padding?: number;
+  };
+  regions: ScaffoldRegion[];
+}
+
+export interface DesignProposal {
+  title: string;
+  why: string;
+  patternsUsed: string[];
+}
+
+export interface GenerateDesignResponse {
+  scaffoldSpec: ScaffoldSpec;
+  proposal: DesignProposal;
+}

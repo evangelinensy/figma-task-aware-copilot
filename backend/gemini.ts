@@ -1,12 +1,12 @@
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
-import { AnalyzeRequest, AnalyzeResponse, PatternMap } from './schema';
+import { AnalyzeRequest, AnalyzeResponse, PatternMap, GenerateDesignRequest, GenerateDesignResponse } from './schema';
 import patternMapData from './mappings/pattern_map.json';
 
 const patternMap: PatternMap = patternMapData;
 
 let genAI: GoogleGenerativeAI;
 
-function initializeGemini() {
+export function initializeGemini(): GoogleGenerativeAI {
   if (!genAI) {
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY is not set in environment variables');
