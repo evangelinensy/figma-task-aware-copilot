@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+*.env
+.env.local
+
+# Build output
+backend/dist/
+backend/*.js
+backend/**/*.js
+!backend/mappings/*.json
+
+# Plugin build files are tracked (code.js, ui.js) but TypeScript source is preferred
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+.cache/
+
+# Material Web (clone separately)
+material-web/

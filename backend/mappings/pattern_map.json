@@ -1,0 +1,52 @@
+{
+  "Sign-in form": {
+    "components": ["md-outlined-text-field", "md-filled-button", "md-checkbox"],
+    "previews": ["sign_in_form.png", "textfield_outlined.png", "button_primary.png"],
+    "rationaleTemplate": "Supports credential entry, clear primary action, optional remember-me; aligns with Material Web accessibility."
+  },
+  "Search with filters": {
+    "components": ["md-outlined-text-field", "md-filter-chip", "md-select"],
+    "previews": ["search_with_filters.png", "chips.png", "select.png"],
+    "rationaleTemplate": "Helps users refine results; chips provide visible filters, text field supports query."
+  },
+  "Inline validation (forms)": {
+    "components": ["md-outlined-text-field", "md-helper-text"],
+    "previews": ["form_with_inline_validation.png", "textfield_outlined.png"],
+    "rationaleTemplate": "Immediate feedback reduces errors; helper text communicates constraints."
+  },
+  "Modal confirmation": {
+    "components": ["md-dialog", "md-filled-button", "md-outlined-button"],
+    "previews": ["modal_confirm.png", "dialog.png", "button_outlined.png"],
+    "rationaleTemplate": "Explicit confirm/cancel actions for destructive or irreversible tasks."
+  },
+  "Tab navigation": {
+    "components": ["md-tabs", "md-tab"],
+    "previews": ["tabbar.png"],
+    "rationaleTemplate": "Organizes content by category; maintains context without page reload."
+  },
+  "Empty state": {
+    "components": ["md-icon", "md-filled-button"],
+    "previews": ["empty_state.png", "button_primary.png"],
+    "rationaleTemplate": "Sets expectations and suggests next steps when content is missing."
+  },
+  "Pagination": {
+    "components": ["md-outlined-button", "md-text-button"],
+    "previews": ["pagination.png", "button_outlined.png"],
+    "rationaleTemplate": "Enables navigation through large datasets without overwhelming the user."
+  },
+  "Data table with sorting": {
+    "components": ["md-list", "md-icon-button", "md-checkbox"],
+    "previews": ["table_with_sort.png", "list.png"],
+    "rationaleTemplate": "Allows users to organize and prioritize information based on different criteria."
+  },
+  "Progressive onboarding": {
+    "components": ["md-dialog", "md-filled-button", "md-text-button"],
+    "previews": ["progressive_onboarding.png", "dialog.png", "button_primary.png"],
+    "rationaleTemplate": "Introduces features gradually, reducing cognitive load for new users."
+  },
+  "Reset password": {
+    "components": ["md-outlined-text-field", "md-filled-button"],
+    "previews": ["reset_password.png", "textfield_outlined.png", "button_primary.png"],
+    "rationaleTemplate": "Secure flow for credential recovery with clear validation and feedback."
+  }
+}

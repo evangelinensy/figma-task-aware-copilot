@@ -1,0 +1,29 @@
+{
+  "name": "task-aware-design-copilot",
+  "version": "0.1.0",
+  "description": "Figma plugin that provides task-aware UX suggestions with Material Web component previews",
+  "scripts": {
+    "build:plugin": "esbuild plugin/code.ts plugin/ui.ts --bundle --outdir=plugin --target=es2020",
+    "build:backend": "tsc -p backend/tsconfig.json",
+    "build": "npm run build:plugin && npm run build:backend",
+    "dev:backend": "tsx watch backend/server.ts",
+    "dev": "npm run build:plugin && npm run dev:backend",
+    "start": "node backend/dist/server.js"
+  },
+  "keywords": ["figma", "plugin", "ux", "design", "copilot", "material-web"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.99.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.24.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

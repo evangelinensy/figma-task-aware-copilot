@@ -1,0 +1,16 @@
+{
+  "primaryTask": "User signs in",
+  "secondaryTask": "Reset password",
+  "persona": "New desktop user",
+  "constraints": "Use Material Web components; minimal form",
+  "frameSnapshot": {
+    "title": "Login",
+    "selectionSummary": {
+      "nodeCount": 18,
+      "nodeTypes": ["FRAME", "TEXT", "INSTANCE", "RECTANGLE"],
+      "textSamples": ["Sign in", "Continue", "Forgot password?", "Email", "Password"],
+      "componentNames": ["Button/Primary", "TextField/Outlined"]
+    },
+    "colorSamples": ["#0B63F6", "#FFFFFF", "#F5F5F5"]
+  }
+}
