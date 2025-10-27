@@ -2,8 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import { analyzeDesign, initializeGemini } from './gemini';
-import { generateDesign } from './generate-design';
-import { AnalyzeRequest, GenerateDesignRequest } from './schema';
+import { AnalyzeRequest } from './schema';
 
 // Load environment variables from backend/.env
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -95,60 +94,6 @@ app.post('/analyze', async (req: Request, res: Response) => {
   }
 });
 
-// Generate design endpoint
-app.post('/generate-design', async (req: Request, res: Response) => {
-  const startTime = Date.now();
-  console.log('\n=== NEW DESIGN GENERATION REQUEST ===');
-
-  try {
-    const request: GenerateDesignRequest = req.body;
-
-    // Validation
-    if (!request.primaryTask || request.primaryTask.trim().length === 0) {
-      console.error('[Validation Error] Primary task is required');
-      res.status(400).json({
-        error: 'Validation Error',
-        message: 'Primary task is required and cannot be empty'
-      });
-      return;
-    }
-
-    console.log('[Request] Primary Task:', request.primaryTask);
-    if (request.secondaryTask) console.log('[Request] Secondary Task:', request.secondaryTask);
-    if (request.persona) console.log('[Request] Persona:', request.persona);
-    if (request.constraints) console.log('[Request] Constraints:', request.constraints);
-
-    if (request.frameSnapshot) {
-      console.log('[Request] Frame:', request.frameSnapshot.title);
-      console.log('[Request] Selection:', request.frameSnapshot.selectionSummary.nodeCount, 'nodes');
-    }
-
-    if (request.analysisResults) {
-      console.log('[Request] Using existing analysis with', request.analysisResults.patterns.length, 'patterns');
-    }
-
-    // Call Gemini to generate design
-    const genAI = initializeGemini();
-    const result = await generateDesign(genAI, request);
-
-    const duration = Date.now() - startTime;
-    console.log(`[Response] Design generation completed in ${duration}ms`);
-    console.log('=== END REQUEST ===\n');
-
-    res.json(result);
-
-  } catch (error: any) {
-    const duration = Date.now() - startTime;
-    console.error(`[Error] Design generation failed after ${duration}ms:`, error);
-
-    res.status(500).json({
-      error: 'Design Generation Error',
-      message: error.message || 'An unexpected error occurred during design generation',
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-});
-
 // 404 handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({
@@ -176,6 +121,5 @@ app.listen(PORT, () => {
   console.log(`✅ Gemini API Key: ${process.env.GEMINI_API_KEY ? 'Configured' : 'MISSING'}`);
   console.log(`\nAvailable endpoints:`);
   console.log(`  GET  /health         - Health check`);
-  console.log(`  POST /analyze        - Design analysis`);
-  console.log(`  POST /generate-design - Generate full design layout\n`);
+  console.log(`  POST /analyze        - Design analysis\n`);
 });

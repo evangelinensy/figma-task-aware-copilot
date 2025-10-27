@@ -252,6 +252,197 @@
     .hidden {
       display: none;
     }
+
+    /* Summary Bar */
+    .summary-bar {
+      background: #252525;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 16px;
+      font-size: 11px;
+      color: #b0b0b0;
+      display: none;
+    }
+
+    .summary-bar.active {
+      display: block;
+    }
+
+    .summary-bar-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .summary-label {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .summary-value {
+      color: #e0e0e0;
+    }
+
+    .summary-badge {
+      background: #1a3a5a;
+      color: #7ab8e8;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: none;
+      border-bottom: 1px solid #3a3a3a;
+      margin-bottom: 16px;
+    }
+
+    .tabs.active {
+      display: flex;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: #b0b0b0;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 12px;
+      font-weight: 500;
+      margin: 0;
+      width: auto;
+    }
+
+    .tab:hover {
+      color: #e0e0e0;
+      background: #252525;
+    }
+
+    .tab.active {
+      color: #0B63F6;
+      border-bottom-color: #0B63F6;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Split view for Recommendations */
+    .split-view {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 16px;
+      min-height: 300px;
+    }
+
+    .pattern-list-sidebar {
+      border-right: 1px solid #3a3a3a;
+      padding-right: 12px;
+    }
+
+    .pattern-list-item {
+      padding: 8px 10px;
+      background: #252525;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .pattern-list-item:hover {
+      background: #2a2a2a;
+    }
+
+    .pattern-list-item.active {
+      background: #1a2a3a;
+      border-left-color: #0B63F6;
+      color: #7ab8e8;
+    }
+
+    .pattern-detail-panel {
+      padding-left: 12px;
+    }
+
+    .pattern-detail-empty {
+      color: #666;
+      text-align: center;
+      padding: 60px 20px;
+      font-size: 12px;
+    }
+
+    /* Flow chips */
+    .flow-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .flow-chip {
+      background: #252525;
+      border: 1px solid #3a3a3a;
+      border-radius: 16px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #e0e0e0;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .flow-chip:hover {
+      background: #2a2a2a;
+      border-color: #0B63F6;
+    }
+
+    .flow-chip.editing {
+      background: #1a2a3a;
+      border-color: #0B63F6;
+    }
+
+    .flow-chip-number {
+      background: #3a3a3a;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .compact-section {
+      margin-bottom: 20px;
+    }
+
+    .compact-section h4 {
+      font-size: 12px;
+      color: #b0b0b0;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
@@ -280,7 +471,10 @@
       <textarea id="systemPrompt" placeholder="Custom instructions for the AI..."></textarea>
 
       <button id="captureBtn" class="secondary">🔄 Refresh selection</button>
-      <button id="analyzeBtn">🔍 Analyze</button>
+      <button id="analyzeBtn">Review & Recommend Designs</button>
+      <p style="font-size: 11px; color: #666; text-align: center; margin-top: 6px; margin-bottom: 0;">
+        Get UX recommendations, patterns, and generate components.
+      </p>
     </div>
 
     <!-- Loading State -->
@@ -295,33 +489,65 @@
       <p id="errorMessage"></p>
     </div>
 
-    <!-- Results -->
+    <!-- Results with Summary Bar and Tabs -->
     <div id="results" class="results">
       <h2>Analysis Results</h2>
 
+      <!-- Summary Bar -->
+      <div id="summary-bar" class="summary-bar">
+        <div class="summary-bar-grid">
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <div class="summary-item">
+              <span class="summary-label">Task:</span>
+              <span class="summary-value" id="summary-task">-</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-badge">Material Web</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Components:</span>
+              <span class="summary-value" id="summary-components">0</span>
+            </div>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label" id="summary-timestamp">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
       <button id="addNotesBtn" class="secondary">📝 Add notes to canvas</button>
 
-      <!-- User Flows -->
-      <div class="result-section">
-        <h3>User Flows</h3>
-        <div id="flows-content"></div>
+      <!-- Tabs -->
+      <div id="tabs" class="tabs">
+        <button class="tab active" data-tab="flows">Flows</button>
+        <button class="tab" data-tab="recommendations">Recommendations</button>
+        <button class="tab" data-tab="accessibility">Accessibility</button>
       </div>
 
-      <!-- UX Improvements -->
-      <div class="result-section">
-        <h3>Top 5 UX Improvements</h3>
-        <div id="improvements-content"></div>
+      <!-- Tab Content: Flows -->
+      <div id="tab-flows" class="tab-content active">
+        <div class="compact-section">
+          <h4>Primary Flow</h4>
+          <div id="flows-primary" class="flow-chips"></div>
+        </div>
+        <div class="compact-section">
+          <h4>Secondary Flow</h4>
+          <div id="flows-secondary" class="flow-chips"></div>
+        </div>
+        <div class="compact-section">
+          <h4>Edge Cases</h4>
+          <div id="flows-edge" class="flow-chips"></div>
+        </div>
       </div>
 
-      <!-- Pattern Suggestions -->
-      <div class="result-section">
-        <h3>Pattern Suggestions</h3>
-        <div id="patterns-content"></div>
+      <!-- Tab Content: Recommendations (merged improvements + components) -->
+      <div id="tab-recommendations" class="tab-content">
+        <div id="recommendations-content"></div>
       </div>
 
-      <!-- WCAG Notes -->
-      <div class="result-section">
-        <h3>WCAG Accessibility Notes</h3>
+      <!-- Tab Content: Accessibility -->
+      <div id="tab-accessibility" class="tab-content">
         <div id="wcag-content"></div>
       </div>
     </div>
@@ -333,6 +559,7 @@
     // State
     let currentSnapshot = null;
     let currentResults = null;
+    let analysisTimestamp = null;
 
     console.log('[UI] Waiting for DOM...');
 
@@ -352,9 +579,16 @@
     let errorSection;
     let errorMessage;
     let resultsSection;
-    let flowsContent;
-    let improvementsContent;
-    let patternsContent;
+    let summaryBar;
+    let summaryTask;
+    let summaryComponents;
+    let summaryTimestamp;
+    let tabs;
+    let tabButtons;
+    let flowsPrimary;
+    let flowsSecondary;
+    let flowsEdge;
+    let recommendationsContent;
     let wcagContent;
 
     function initializeDOM() {
@@ -375,12 +609,82 @@
       errorSection = document.getElementById('error');
       errorMessage = document.getElementById('errorMessage');
       resultsSection = document.getElementById('results');
-      flowsContent = document.getElementById('flows-content');
-      improvementsContent = document.getElementById('improvements-content');
-      patternsContent = document.getElementById('patterns-content');
+      summaryBar = document.getElementById('summary-bar');
+      summaryTask = document.getElementById('summary-task');
+      summaryComponents = document.getElementById('summary-components');
+      summaryTimestamp = document.getElementById('summary-timestamp');
+      tabs = document.getElementById('tabs');
+      tabButtons = document.querySelectorAll('.tab');
+      flowsPrimary = document.getElementById('flows-primary');
+      flowsSecondary = document.getElementById('flows-secondary');
+      flowsEdge = document.getElementById('flows-edge');
+      recommendationsContent = document.getElementById('recommendations-content');
       wcagContent = document.getElementById('wcag-content');
 
       console.log('[UI] DOM elements initialized successfully');
+
+      // Load persisted draft state
+      loadDraftState();
+    }
+
+    // Draft state persistence (in-memory only - localStorage not available in Figma plugins)
+    let draftState = {
+      primaryTask: '',
+      secondaryTask: '',
+      persona: '',
+      constraints: '',
+      systemPrompt: '',
+      activeTab: 'flows'
+    };
+
+    function saveDraftState() {
+      try {
+        draftState = {
+          primaryTask: primaryTaskInput.value,
+          secondaryTask: secondaryTaskInput.value,
+          persona: personaInput.value,
+          constraints: constraintsInput.value,
+          systemPrompt: systemPromptInput.value,
+          activeTab: document.querySelector('.tab.active')?.dataset.tab || 'flows'
+        };
+      } catch (e) {
+        console.log('[UI] Failed to save draft state:', e);
+      }
+    }
+
+    function loadDraftState() {
+      // In-memory state only - no localStorage in Figma plugins
+      console.log('[UI] Draft state loaded (in-memory only)');
+    }
+
+    // Tab switching
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabName);
+      });
+
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        const contentTabName = content.id.replace('tab-', '');
+        content.classList.toggle('active', contentTabName === tabName);
+      });
+
+      // Save active tab
+      saveDraftState();
+    }
+
+    // Summary bar
+    function updateSummaryBar(primaryTask, componentCount) {
+      summaryTask.textContent = primaryTask.substring(0, 40) + (primaryTask.length > 40 ? '...' : '');
+      summaryComponents.textContent = componentCount;
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      summaryTimestamp.textContent = timeStr;
+
+      summaryBar.classList.add('active');
+      tabs.classList.add('active');
     }
 
     function updateSelectionStatus(snapshot) {
@@ -423,94 +727,77 @@
     }
 
     function renderFlows(flows) {
-      let html = '';
+      // Primary flow chips
+      flowsPrimary.innerHTML = '';
+      flows.primary.forEach((step, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'flow-chip';
+        chip.innerHTML = `<span class="flow-chip-number">${idx + 1}</span>${escapeHtml(step)}`;
+        chip.onclick = () => console.log('[UI] Flow step clicked:', step);
+        flowsPrimary.appendChild(chip);
+      });
 
-      if (flows.primary.length > 0) {
-        html += '<h4 style="font-size: 13px; margin-top: 10px; margin-bottom: 6px;">Primary Flow</h4>';
-        html += '<ol class="flow-list">';
-        flows.primary.forEach(step => {
-          html += `<li>${escapeHtml(step)}</li>`;
-        });
-        html += '</ol>';
-      }
+      // Secondary flow chips
+      flowsSecondary.innerHTML = '';
+      flows.secondary.forEach((step, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'flow-chip';
+        chip.innerHTML = `<span class="flow-chip-number">${idx + 1}</span>${escapeHtml(step)}`;
+        chip.onclick = () => console.log('[UI] Flow step clicked:', step);
+        flowsSecondary.appendChild(chip);
+      });
 
-      if (flows.secondary.length > 0) {
-        html += '<h4 style="font-size: 13px; margin-top: 10px; margin-bottom: 6px;">Secondary Flow</h4>';
-        html += '<ol class="flow-list">';
-        flows.secondary.forEach(step => {
-          html += `<li>${escapeHtml(step)}</li>`;
-        });
-        html += '</ol>';
-      }
-
-      if (flows.edgeCases.length > 0) {
-        html += '<h4 style="font-size: 13px; margin-top: 10px; margin-bottom: 6px;">Edge Cases</h4>';
-        html += '<ol class="flow-list">';
-        flows.edgeCases.forEach(step => {
-          html += `<li>${escapeHtml(step)}</li>`;
-        });
-        html += '</ol>';
-      }
-
-      flowsContent.innerHTML = html;
+      // Edge case chips
+      flowsEdge.innerHTML = '';
+      flows.edgeCases.forEach((step, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'flow-chip';
+        chip.innerHTML = `<span class="flow-chip-number">${idx + 1}</span>${escapeHtml(step)}`;
+        chip.onclick = () => console.log('[UI] Flow step clicked:', step);
+        flowsEdge.appendChild(chip);
+      });
     }
 
-    function renderImprovements(improvements) {
+    function renderRecommendations(improvements) {
       let html = '';
 
       improvements.forEach((improvement, index) => {
+        const components = improvement.suggestedComponents || [];
+
         html += `
           <div class="improvement-item">
             <h4>${index + 1}. ${escapeHtml(improvement.title)}</h4>
             <p><strong>Why:</strong> ${escapeHtml(improvement.rationale)}</p>
             <p><strong>How to apply:</strong> ${escapeHtml(improvement.howToApply)}</p>
-          </div>
-        `;
-      });
-
-      improvementsContent.innerHTML = html;
-    }
-
-    function renderPatterns(patterns) {
-      let html = '';
-
-      patterns.forEach((pattern, index) => {
-        const components = pattern.components || pattern.componentsHint || [];
-        const rationale = pattern.rationale || pattern.why || '';
-
-        html += `
-          <div class="pattern-item">
-            <h4>${escapeHtml(pattern.name)}</h4>
-            <p>${escapeHtml(rationale)}</p>
 
             ${components.length > 0 ? `
-              <div style="margin-top: 8px;">
-                <strong style="font-size: 11px; color: #666;">Material Web Components:</strong><br>
+              <div style="margin-top: 12px; margin-bottom: 8px;">
+                <strong style="font-size: 11px; color: #b0b0b0;">Suggested Components:</strong><br>
                 ${components.map(c => `<span class="component-tag">${escapeHtml(c)}</span>`).join('')}
               </div>
+              <div class="pattern-actions">
+                <button class="secondary" data-improvement-index="${index}">
+                  ⚡ Insert components
+                </button>
+              </div>
             ` : ''}
-
-            <div class="pattern-actions">
-              <button class="secondary" data-pattern-index="${index}">
-                ⚡ Insert wireframe placeholder
-              </button>
-            </div>
           </div>
         `;
       });
 
-      patternsContent.innerHTML = html;
+      recommendationsContent.innerHTML = html;
 
-      patternsContent.querySelectorAll('button[data-pattern-index]').forEach(btn => {
+      // Add event listeners for insert buttons
+      recommendationsContent.querySelectorAll('button[data-improvement-index]').forEach(btn => {
         btn.addEventListener('click', (e) => {
-          const index = parseInt(e.target.getAttribute('data-pattern-index') || '0');
-          const pattern = patterns[index];
-          const components = pattern.components || pattern.componentsHint || [];
+          const index = parseInt(e.target.getAttribute('data-improvement-index') || '0');
+          const improvement = improvements[index];
+          const components = improvement.suggestedComponents || [];
 
           parent.postMessage({
             pluginMessage: {
               type: 'insert-scaffold',
-              patternName: pattern.name,
+              patternName: improvement.title,
               components
             }
           }, '*');
@@ -539,12 +826,26 @@
       hideLoading();
       hideError();
 
+      // Count total components from improvements
+      const componentCount = results.uxImprovements.reduce((total, improvement) => {
+        const components = improvement.suggestedComponents || [];
+        return total + components.length;
+      }, 0);
+
+      // Update summary bar
+      updateSummaryBar(primaryTaskInput.value, componentCount);
+
+      // Render all content
       renderFlows(results.flows);
-      renderImprovements(results.uxImprovements);
-      renderPatterns(results.patterns);
+      renderRecommendations(results.uxImprovements);
       renderWCAG(results.wcagNotes);
 
       resultsSection.classList.add('active');
+
+      // Restore active tab from in-memory draft state
+      if (draftState.activeTab) {
+        switchTab(draftState.activeTab);
+      }
     }
 
     async function analyzeDesign() {
@@ -595,6 +896,20 @@
 
     function setupEventListeners() {
       console.log('[UI] Setting up event listeners...');
+
+      // Input change listeners for draft state persistence
+      primaryTaskInput.addEventListener('input', saveDraftState);
+      secondaryTaskInput.addEventListener('input', saveDraftState);
+      personaInput.addEventListener('input', saveDraftState);
+      constraintsInput.addEventListener('input', saveDraftState);
+      systemPromptInput.addEventListener('input', saveDraftState);
+
+      // Tab switching
+      document.querySelectorAll('.tab').forEach(tabBtn => {
+        tabBtn.addEventListener('click', () => {
+          switchTab(tabBtn.dataset.tab);
+        });
+      });
 
       captureBtn.addEventListener('click', () => {
         console.log('[UI] Requesting selection capture');

@@ -72,9 +72,9 @@ export const generateDesignSchema = {
 export function buildDesignPrompt(request: GenerateDesignRequest): string {
   const { primaryTask, secondaryTask, persona, constraints, frameSnapshot, analysisResults } = request;
 
-  let prompt = "You are a senior product designer creating complete, cohesive design layouts for desktop web interfaces. ";
-  prompt += "Generate a scaffoldSpec with 2-4 regions, using Material Web component names. ";
-  prompt += "Prioritize clarity, accessibility, and logical information hierarchy.\\n\\n";
+  let prompt = "You are a senior product designer creating cohesive design layouts. ";
+  prompt += "Generate a scaffoldSpec with 2-4 regions using Material Web components. ";
+  prompt += "Keep the proposal brief (1-2 sentences).\\n\\n";
 
   prompt += "---\\n\\n";
 
@@ -112,19 +112,11 @@ export function buildDesignPrompt(request: GenerateDesignRequest): string {
 
   prompt += "\\n---\\n\\n";
   prompt += "**Instructions**:\\n";
-  prompt += "1. Create a cohesive layout (1200-1440px wide) that integrates ALL suggested patterns.\\n";
-  prompt += "2. Organize content into 2-4 logical regions (e.g., Header, Search, Main Content, Actions).\\n";
-  prompt += "3. Use Material Web component names:\\n";
-  prompt += "   - Buttons: md-filled-button, md-outlined-button, md-text-button\\n";
-  prompt += "   - Text fields: md-outlined-text-field, md-filled-text-field\\n";
-  prompt += "   - Lists: md-list, md-list-item\\n";
-  prompt += "   - Cards: md-elevated-card, md-filled-card, md-outlined-card\\n";
-  prompt += "   - Other: md-checkbox, md-switch, md-dialog, md-divider, md-icon, md-fab, md-chip\\n";
-  prompt += "4. Set appropriate layout modes (VERTICAL for main frame, HORIZONTAL for button groups).\\n";
-  prompt += "5. Add text overrides for labels, headings, and descriptions.\\n";
-  prompt += "6. Use 'divider' type for visual separation between regions.\\n";
-  prompt += "7. Generate a proposal explaining the design rationale.\\n";
-  prompt += "\\nIMPORTANT: Return only valid JSON matching the scaffoldSpec schema.\\n";
+  prompt += "1. Create layout (1200-1440px) with 2-4 regions integrating suggested patterns.\\n";
+  prompt += "2. Available components: md-filled-button, md-outlined-button, md-text-button, md-outlined-text-field, md-filled-text-field, md-list, md-list-item, md-elevated-card, md-filled-card, md-outlined-card, md-checkbox, md-switch, md-icon, md-fab, md-chip\\n";
+  prompt += "3. Node types: {type: 'component', componentName: 'md-...'} | {type: 'text', textOverride: '...'} | {type: 'divider'} | {type: 'rect'}\\n";
+  prompt += "4. Each region needs 2-5 nodes. Use VERTICAL for main, HORIZONTAL for button groups.\\n";
+  prompt += "5. Proposal 'why': 1-2 sentences explaining rationale.\\n";
 
   return prompt;
 }
@@ -166,6 +158,14 @@ export async function generateDesign(genAI: GoogleGenerativeAI, request: Generat
     console.log('[Gemini] Proposal:', parsedResponse.proposal.title);
     console.log('[Gemini] Regions:', parsedResponse.scaffoldSpec.regions.length);
     console.log('[Gemini] Patterns used:', parsedResponse.proposal.patternsUsed.join(', '));
+
+    // Log each region's nodes for debugging
+    parsedResponse.scaffoldSpec.regions.forEach((region, idx) => {
+      console.log(`[Gemini] Region ${idx + 1} "${region.name}": ${region.nodes.length} nodes`);
+      region.nodes.forEach((node, nodeIdx) => {
+        console.log(`[Gemini]   Node ${nodeIdx + 1}: type="${node.type}", component="${node.componentName || 'N/A'}", text="${node.textOverride || 'N/A'}"`);
+      });
+    });
 
     return parsedResponse;
   } catch (error) {

@@ -36,7 +36,12 @@ const responseSchema = {
         properties: {
           title: { type: SchemaType.STRING },
           rationale: { type: SchemaType.STRING },
-          howToApply: { type: SchemaType.STRING }
+          howToApply: { type: SchemaType.STRING },
+          suggestedComponents: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING },
+            nullable: true
+          }
         },
         required: ['title', 'rationale', 'howToApply']
       }
@@ -84,11 +89,9 @@ function buildPrompt(request: AnalyzeRequest): string {
   const { primaryTask, secondaryTask, persona, constraints, systemPrompt, frameSnapshot } = request;
 
   let prompt = systemPrompt ||
-    "You are a senior product designer specializing in desktop web UX. " +
-    "You provide task-focused, CONTEXT-AWARE design guidance. " +
-    "Your #1 priority is to ANALYZE the current design first, then provide suggestions grounded in what you see. " +
-    "Reference components by Material Web names where applicable. " +
-    "Be concise, avoid copying specific product UIs.";
+    "You are a senior product designer. Provide task-focused, context-aware guidance. " +
+    "Analyze the current design, then suggest improvements. " +
+    "Use Material Web component names. Keep all responses BRIEF (1-2 sentences max per item).";
 
   prompt += "\n\n---\n\n";
 
@@ -132,19 +135,18 @@ function buildPrompt(request: AnalyzeRequest): string {
   }
 
   prompt += "\n---\n\n";
-  prompt += "**Instructions**:\n";
-  prompt += "1. FIRST, analyze the Current Design Context above to understand what interface type this is.\n";
-  prompt += "2. Provide user flows that match the ACTUAL interface you see (not generic flows).\n";
-  prompt += "3. Suggest EXACTLY 5 UX improvements specific to this interface type.\n";
-  prompt += "4. Suggest 3-5 design patterns that fit the CURRENT design you analyzed.\n";
-  prompt += "5. For each pattern, specify Material Web component names (e.g., md-outlined-text-field, md-filled-button).\n";
-  prompt += "6. Provide WCAG accessibility notes based on what you see in the design.\n";
-  prompt += "7. Generate 2-3 canvas notes for the designer:\n";
-  prompt += "   - First note: List the top 3 critical problems/issues in this design\n";
-  prompt += "   - Second note: Provide 3-4 actionable suggestions for the designer to consider\n";
-  prompt += "   - Third note (optional): Any additional context-specific insights\n";
-  prompt += "   Format each note as a clear, concise paragraph (max 2-3 sentences).\n";
-  prompt += "\nREMEMBER: All suggestions must be grounded in the actual design context, not generic patterns.\n";
+  prompt += "**Instructions** (KEEP ALL TEXT CONCISE - 1-2 sentences max):\n";
+  prompt += "1. Analyze the Current Design Context to identify interface type.\n";
+  prompt += "2. Provide 3-5 flow steps per flow type that match the ACTUAL interface.\n";
+  prompt += "3. Suggest EXACTLY 5 UX improvements:\n";
+  prompt += "   - title: Brief improvement name\n";
+  prompt += "   - rationale: 1 sentence why it's needed\n";
+  prompt += "   - howToApply: 1 sentence how to fix it\n";
+  prompt += "   - suggestedComponents: Array of 1-3 Material Web component names to implement the fix (e.g., ['md-headline-medium', 'md-filled-button'])\n";
+  prompt += "4. Suggest 3-5 patterns with brief rationale (1 sentence) and Material Web components.\n";
+  prompt += "5. Provide 3-5 WCAG notes (issue + 1 sentence detail + 1 sentence fix).\n";
+  prompt += "6. Generate 3 canvas notes (1-2 sentences each): top problems, actionable suggestions, insights.\n";
+  prompt += "\nKEEP IT BRIEF: All rationales, details, and fixes must be 1-2 sentences maximum.\n";
 
   return prompt;
 }

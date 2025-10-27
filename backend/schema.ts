@@ -26,6 +26,7 @@ export interface UXImprovement {
   title: string;
   rationale: string;
   howToApply: string;
+  suggestedComponents?: string[];
 }
 
 export interface PatternSuggestion {
